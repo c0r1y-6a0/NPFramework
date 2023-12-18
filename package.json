@@ -1,0 +1,10 @@
+{
+  "name": "com.naughtypig.framework",
+  "version": "0.0.1",
+  "displayName": "NPFramework",
+  "description": "dada",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "dependencies": {},
+  "keywords": []
+}
