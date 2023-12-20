@@ -11,6 +11,7 @@ namespace NP
             m_poolDefaultCapacity = defaultCapacity;
         }
 
+        
         public TCollection Get<TCollection, TValue>(bool createPool = true, uint capacity = 0)
             where TCollection : class, ICollection<TValue>, new()
         {
@@ -25,6 +26,13 @@ namespace NP
             }
 
             return (m_poolDic[t] as SimpleCollectionPool<TCollection, TValue>)?.Get();
+        }
+
+        public SimpleCollectionPoolItem<TCollection, TValue> GetPoolItem<TCollection, TValue>(bool createPool = true, uint capacity = 0)
+            where TCollection : class, ICollection<TValue>, new()
+        {
+            var collection = Get<TCollection, TValue>(createPool, capacity);
+            return new SimpleCollectionPoolItem<TCollection, TValue>(m_poolDic[typeof(TCollection)] as SimpleCollectionPool<TCollection, TValue>, collection);
         }
 
         public void Release<TCollection, TValue>(TCollection collection) where TCollection : class, ICollection<TValue>, new()
