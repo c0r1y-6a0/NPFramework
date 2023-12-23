@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace NP
 {
@@ -11,7 +12,7 @@ namespace NP
             {
                 foreach (var kv in m_status)
                 {
-                    if (kv.Value == true)
+                    if (kv.Value)
                         return true;
                 }
 
@@ -24,8 +25,8 @@ namespace NP
         /// </summary>
         /// <param name="slots"></param>
         /// <param name="onValueChange"> 第一个是之前，第二个是现在 </param>
-        public LogicOr(IEnumerable<TEnum> slots, Action<bool, bool> onValueChange)
-            : base(slots, onValueChange)
+        public LogicOr(IEnumerable<TEnum> slots, Action<bool, bool> onValueChange, bool alwaysUpdate = false, string debugString = null)
+            : base(slots, onValueChange, alwaysUpdate, debugString)
         {
         }
     }
@@ -51,8 +52,8 @@ namespace NP
         /// </summary>
         /// <param name="slots"></param>
         /// <param name="onValueChange"> 第一个是之前，第二个是现在 </param>
-        public LogicAnd(IEnumerable<TEnum> slots, Action<bool, bool> onValueChange)
-            : base(slots, onValueChange)
+        public LogicAnd(IEnumerable<TEnum> slots, Action<bool, bool> onValueChange, bool alwaysUpdate = false, string debugString = null)
+            : base(slots, onValueChange, alwaysUpdate, debugString)
         {
         }
     }
@@ -60,16 +61,19 @@ namespace NP
     public abstract class LogicOP<TEnum> where TEnum : Enum
     {
         public abstract bool Value { get; }
+        public string DebugString { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="slots"></param>
         /// <param name="onValueChange"> 第一个是之前，第二个是现在 </param>
-        protected LogicOP(IEnumerable<TEnum> slots, Action<bool, bool> onValueChange)
+        protected LogicOP(IEnumerable<TEnum> slots, Action<bool, bool> onValueChange, bool alwaysUpdate, string debugString)
         {
             m_status = new();
             m_onValueChange = onValueChange;
+            m_alwaysUpdate = alwaysUpdate;
+            DebugString = debugString;
             foreach (var slot in slots)
             {
                 m_status.Add(slot.ToString(), false);
@@ -78,16 +82,35 @@ namespace NP
 
         public void Set(string slot, bool b)
         {
+            string preStatus = GetStatusString();
             bool preValue = Value;
             m_status[slot] = b;
             bool newValue = Value;
-            if (preValue != newValue)
+
+            if (DebugString != null)
+            {
+                Debug.Log($"LogicOP {DebugString} statuc from {preStatus} to {GetStatusString()}");
+            }
+
+            if (preValue != newValue || m_alwaysUpdate)
             {
                 m_onValueChange?.Invoke(preValue, newValue);
             }
         }
 
+        private string GetStatusString()
+        {
+            string result = "";
+            foreach (var kv in m_status)
+            {
+                result += $"{kv.Key}:{kv.Value}   ";
+            }
+
+            return result;
+        }
+
         protected readonly Dictionary<string, bool> m_status;
         private readonly Action<bool, bool> m_onValueChange;
+        private readonly bool m_alwaysUpdate;
     }
 }
