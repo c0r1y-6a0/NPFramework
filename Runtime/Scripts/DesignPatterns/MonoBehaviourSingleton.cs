@@ -59,7 +59,7 @@ namespace NP
         /// </summary>
         private static T FindExistingInstance()
         {
-            T[] existingInstances = FindObjectsOfType<T>();
+            T[] existingInstances = FindObjectsOfType<T>(true);
 
             // No instance found
             if (existingInstances == null || existingInstances.Length == 0) return null;
