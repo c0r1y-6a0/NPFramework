@@ -132,7 +132,6 @@ namespace NP
             if (_instance == null)
             {
                 _instance = thisInstance;
-                DontDestroyOnLoad(_instance.gameObject);
             }
 
             else if (thisInstance != _instance)
