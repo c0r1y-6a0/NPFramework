@@ -7,7 +7,7 @@ namespace NP
     public class StateMachine<T> where T : Enum
     {
         public T CurrentState { get; private set; }
-        
+
         private struct Transition
         {
             public T Destination;
@@ -19,7 +19,7 @@ namespace NP
         {
             m_states = new Dictionary<T, IState>();
             m_transitions = new Dictionary<T, List<Transition>>();
-            
+
             AddState(defaultState, stateObj);
 
             CurrentState = defaultState;
@@ -59,7 +59,7 @@ namespace NP
             {
                 return;
             }
-            
+
             if (!TryTransition(CurrentState, state, out var transitionAction))
             {
                 return;
@@ -85,14 +85,14 @@ namespace NP
             {
                 if (transition.Destination.Equals(to))
                 {
-                    if (transition.Guard != null && transition.Guard())
+                    if (transition.Guard != null && !transition.Guard())
                     {
-                        transitionAction = transition.TransitionAction;
-                        return true;
+                        Debug.LogError($"transition from {CurrentState} to {to} failed");
+                        return false;
                     }
 
-                    Debug.LogError($"transition from {CurrentState} to {to} failed");
-                    return false;
+                    transitionAction = transition.TransitionAction;
+                    return true;
                 }
             }
 

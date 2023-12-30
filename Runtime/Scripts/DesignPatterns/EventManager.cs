@@ -36,9 +36,9 @@ namespace NP
                 return;
             }
 
-            foreach (var listener in m_eventListerns[eventType])
+            for (int i = m_eventListerns[eventType].Count - 1; i >= 0; i--)
             {
-                ((Action<T>)listener)(eventObj);
+                ((Action<T>)m_eventListerns[eventType][i])(eventObj);
             }
         }
         
