@@ -1,7 +1,12 @@
 {
     "name": "naughtypig.framework",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:d8b63aba1907145bea998dd612889d6b",
+        "GUID:2665a8d13d1b3f18800f46e256720795",
+        "GUID:9c6dda6c7922c624cb7ea9a7f1c7d54a",
+        "GUID:15ce69d7d9d9370c9704e0797a0ab06b"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
