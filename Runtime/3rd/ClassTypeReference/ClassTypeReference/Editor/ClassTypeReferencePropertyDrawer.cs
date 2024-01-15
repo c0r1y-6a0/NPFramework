@@ -1,6 +1,7 @@
 // Copyright (c) Rotorz Limited. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root.
 
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -287,3 +288,4 @@ namespace TypeReferences
         }
     }
 }
+#endif
