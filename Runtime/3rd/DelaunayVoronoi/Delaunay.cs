@@ -16,7 +16,6 @@ namespace DelaunayVoronoi
             MaxX = maxX;
             MaxY = maxY;
 
-            // TODO make more beautiful
             var point0 = new Point(minX, minY);
             var point1 = new Point(minX, MaxY);
             var point2 = new Point(MaxX, MaxY);
@@ -36,7 +35,7 @@ namespace DelaunayVoronoi
             return points;
         }
 
-        public HashSet<Triangle> BowyerWatson(IEnumerable<Point> points)
+        public List<Triangle> BowyerWatson(IEnumerable<Point> points)
         {
             //var supraTriangle = GenerateSupraTriangle();
             var triangulation = new HashSet<Triangle>(border);
@@ -63,7 +62,7 @@ namespace DelaunayVoronoi
             }
 
             //triangulation.RemoveWhere(o => o.Vertices.Any(v => supraTriangle.Vertices.Contains(v)));
-            return triangulation;
+            return triangulation.ToList();
         }
 
         private List<Edge> FindHoleBoundaries(ISet<Triangle> badTriangles)

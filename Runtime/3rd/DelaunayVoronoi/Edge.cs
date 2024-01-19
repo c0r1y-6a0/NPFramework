@@ -18,6 +18,16 @@ namespace DelaunayVoronoi
             return new Vector2((float)Point2.Y - (float)Point1.Y, (float)Point2.X - (float)Point1.X);
         }
 
+        public bool InRect(Rect rect)
+        {
+            return rect.Contains(Point1.ToVector2()) && rect.Contains(Point2.ToVector2());
+        }
+
+        public bool IsVertex(Point p)
+        {
+            return p.Equals(Point1) || p.Equals(Point2);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null) return false;

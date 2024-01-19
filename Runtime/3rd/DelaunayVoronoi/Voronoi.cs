@@ -1,18 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace DelaunayVoronoi
 {
-    public class VoronoiPolygon
-    {
-        public List<Edge> Edges { get; }
-
-        public VoronoiPolygon(List<Edge> edges)
-        {
-            Edges = edges;
-        }
-    }
-
     public static class Voronoi
     {
         public static HashSet<Edge> GenerateEdgesFromDelaunay(IEnumerable<Triangle> triangulation)
@@ -30,9 +21,9 @@ namespace DelaunayVoronoi
             return voronoiEdges;
         }
 
-        public static List<VoronoiPolygon> GetPolygons(Triangle firstTriangle)
+        public static List<Polygon> GetPolygons(Triangle firstTriangle)
         {
-            List<VoronoiPolygon> result = new();
+            HashSet<Polygon> result = new();
             foreach (var firstTriangleNeighbor in firstTriangle.TrianglesWithSharedEdge)
             {
                 var firstEdge = new Edge(firstTriangle.Circumcenter, firstTriangleNeighbor.Circumcenter);
@@ -44,27 +35,27 @@ namespace DelaunayVoronoi
                     {
                         continue;
                     }
-                    
+
                     List<Edge> edges = new List<Edge>();
                     edges.Add(firstEdge);
-                    
+
                     var secondEdge = new Edge(firstTriangleNeighbor.Circumcenter, secondTriangleNeighbor.Circumcenter);
                     var secondEdgeVector = secondEdge.GetVector().normalized;
                     float clockWise = firstEdgeVector.x * secondEdgeVector.y - firstEdgeVector.y * secondEdgeVector.x;
                     edges.Add(secondEdge);
-                    
+
                     AppendToEdgesByConvexHull(edges, clockWise, secondTriangleNeighbor, firstTriangleNeighbor, firstTriangle);
-                    result.Add(new VoronoiPolygon(edges));
+                    result.Add(new Polygon(edges));
                 }
             }
 
-            return result;
+            return result.ToList();
         }
 
         private static void AppendToEdgesByConvexHull(List<Edge> edges, float clockWise, Triangle currentTriangle, Triangle previousTriangle, Triangle firstTriangle)
         {
-            Vector2 lastEdgeVector = edges[edges.Count - 1].GetVector().normalized;
-            
+            Vector2 lastEdgeVector = edges[^1].GetVector().normalized;
+
             foreach (var neighbour in currentTriangle.TrianglesWithSharedEdge)
             {
                 if (neighbour == previousTriangle)
@@ -73,26 +64,25 @@ namespace DelaunayVoronoi
                 }
 
                 var edge = new Edge(currentTriangle.Circumcenter, neighbour.Circumcenter);
-                
+
                 if (neighbour == firstTriangle)
                 {
                     edges.Add(edge);
-                    Debug.Log("Mission complete");
                     return; //mission complete
                 }
-                
+
                 var edgeVector = edge.GetVector().normalized;
                 float newClockWise = lastEdgeVector.x * edgeVector.y - lastEdgeVector.y * edgeVector.x;
                 if (newClockWise * clockWise == 0)
                 {
                     Debug.Assert(false, "something is wrong");
                 }
-                
+
                 if (newClockWise * clockWise > 0)
                 {
                     edges.Add(edge);
                     AppendToEdgesByConvexHull(edges, newClockWise, neighbour, currentTriangle, firstTriangle);
-                } 
+                }
             }
         }
     }

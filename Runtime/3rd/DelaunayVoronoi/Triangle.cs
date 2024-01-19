@@ -10,6 +10,17 @@ namespace DelaunayVoronoi
         public Point Circumcenter { get; private set; }
         public double RadiusSquared;
 
+        public bool IsVertex(Point p)
+        {
+            foreach (var v in Vertices)
+            {
+                if (p.Equals(v))
+                    return true;
+            }
+
+            return false;
+        }
+
         public IEnumerable<Triangle> TrianglesWithSharedEdge {
             get {
                 var neighbors = new HashSet<Triangle>();
